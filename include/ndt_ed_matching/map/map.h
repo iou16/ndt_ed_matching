@@ -51,6 +51,24 @@ class NDTEDGridMap: public boost::noncopyable
       for (size_t i = 0; i < size_[0]; i++)
         for (size_t j = 0; j < size_[1]; j++)
           cells_.coeffRef (i, j).estimateParams (5, 0.001);
+
+      for (size_t i = 0; i < size_[0]; i++) {
+        for (size_t j = 0; j < size_[1]; j++) {
+          Eigen::Vector3d mean  = cells_.coeffRef(i, j).getMean() / 4;
+          for (size_t x=-1; x<=1; x++) {
+            for(size_t y=-1; y<=1; y++) {
+              if((x+i < 0) || (size_[0] <= x+i) || (y+j < 0) || (size_[1] <= y+j)) continue;
+              if (x==0 && y==0) {
+              } else if (x==0 || y==0) {
+                mean += cells_.coeffRef(x+i, y+j).getMean() / 8;
+              } else {
+                mean += cells_.coeffRef(x+i, y+j).getMean() / 16;
+              }
+            }
+          cells_.coeffRef(i, j).setMean(mean);
+          }
+        }
+      }
       added_ = false;
     }
 

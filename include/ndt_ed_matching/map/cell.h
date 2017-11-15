@@ -46,18 +46,18 @@ class NormalDistCell
       if (n_ >= min_n)
       {
         mean_ = sx_ / static_cast<double> (n_);
-        Eigen::Matrix3d covar = (sxx_ / static_cast<double> (n_)) - (mean_ * mean_.transpose ());
+        // Eigen::Matrix3d covar = (sxx_ / static_cast<double> (n_)) - (mean_ * mean_.transpose ());
 
-        Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> solver (covar);
-        if (solver.eigenvalues ()[0] < min_covar_eigvalue_mult * solver.eigenvalues ()[2])
-        {
-          Eigen::Matrix3d l = solver.eigenvalues ().asDiagonal ();
-          Eigen::Matrix3d q = solver.eigenvectors ();
-          l (0,0) = l (2,2) * min_covar_eigvalue_mult;
-          if (solver.eigenvalues ()[1] < min_covar_eigvalue_mult * solver.eigenvalues ()[2]) l (1,1) = l (2,2) * min_covar_eigvalue_mult;
-          covar = q * l * q.transpose ();
-        }
-        covar_inv_ = covar.inverse ();
+        // Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> solver (covar);
+        // if (solver.eigenvalues ()[0] < min_covar_eigvalue_mult * solver.eigenvalues ()[2])
+        // {
+        //   Eigen::Matrix3d l = solver.eigenvalues ().asDiagonal ();
+        //   Eigen::Matrix3d q = solver.eigenvectors ();
+        //   l (0,0) = l (2,2) * min_covar_eigvalue_mult;
+        //   if (solver.eigenvalues ()[1] < min_covar_eigvalue_mult * solver.eigenvalues ()[2]) l (1,1) = l (2,2) * min_covar_eigvalue_mult;
+        //   covar = q * l * q.transpose ();
+        // }
+        // covar_inv_ = covar.inverse ();
       }
     }
 
@@ -65,6 +65,17 @@ class NormalDistCell
     getMean ()
     {
       return mean_;
+    }
+
+    void
+    setMean (Eigen::Vector3d mean)
+    {
+      mean_ = mean;
+    }
+
+    void addMean(Eigen::Vector3d mean)
+    {
+      mean_ += mean;
     }
 
     ValueAndDerivatives<3,double>
